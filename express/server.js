@@ -18,5 +18,16 @@ app.use(bodyParser.json());
 app.use('/.netlify/functions/server', router);  // path must route to lambda
 app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
 
+app.get('/bn', async (req, res) => {
+  try {
+    const result = await axios.get(
+      `https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`
+    );
+    const repos = result.data
+    res.send(repos);
+  } catch (error) {
+    res.status(400).send('Error while getting list of repositories'+error);
+  }
+});
 module.exports = app;
 module.exports.handler = serverless(app);
